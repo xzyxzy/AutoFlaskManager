@@ -53,6 +53,18 @@ namespace FlaskManager
             OffensiveUseWhenCharges = new RangeNode<int>(0, 0, 100);
             //Unique Flask
             UniqFlaskEnable = false;
+            //Defensive Skill
+            DefSkillEnable = false;
+            HpDefensiveSkill = new RangeNode<int>(50, 0, 100);
+            EsDefensiveSkill = new RangeNode<int>(50, 0, 100);
+            DefensiveSkillDelay = new RangeNode<float>(3000f, 0f, 10000f);
+            SkillUseKey = Keys.R;
+            //Movement Skill
+            MoveEnable = false;
+            MoveDurration = new RangeNode<float>(500f, 0f, 5000f);
+            MoveUseKey = Keys.Q;
+            //MoveSkillDelay = new RangeNode<float>(500f, 0f, 10000f);
+
             // Settings
             // Flask UI Settings
             FlaskUiEnable = false;
@@ -169,6 +181,30 @@ namespace FlaskManager
         #region Unnique Flask Menu
         [Menu("Unique Flask", 60)]
         public ToggleNode UniqFlaskEnable { get; set; }
+        #endregion
+
+        #region Defensive Skill Menu
+        [Menu("Defensive Skill", 70)]
+        public ToggleNode DefSkillEnable { get; set; }
+        [Menu("Min Life %", 71, 70)]
+        public RangeNode<int> HpDefensiveSkill { get; set; }
+        [Menu("Min ES %", 72, 70)]
+        public RangeNode<int> EsDefensiveSkill { get; set; }
+        [Menu("Delay (millisecond)", 73, 70)]
+        public RangeNode<float> DefensiveSkillDelay { get; set; }
+        [Menu("Skill Key Hotkey", 74, 70)]
+        public HotkeyNode SkillUseKey { get; set; }
+        #endregion
+        
+        #region Movement Skill Menu
+        [Menu("Movement Skill", 80)]
+        public ToggleNode MoveEnable { get; set; }
+        [Menu("Use After Moving Post (millisecond)", 81, 80)]
+        public RangeNode<float> MoveDurration { get; set; }
+        [Menu("Skill Key Hotkey", 82, 80)]
+        public HotkeyNode MoveUseKey { get; set; }
+        //[Menu("Delay (millisecond)", 83, 80)]
+        //public RangeNode<float> MoveSkillDelay { get; set; }
         #endregion
 
         #region Settings Menu

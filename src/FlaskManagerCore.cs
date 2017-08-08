@@ -30,10 +30,14 @@ namespace FlaskManager
         private List<PlayerFlask> _playerFlaskList;
 
         private float _moveCounter;
+        private float _moveLMBCounter;
         private float _lastManaUsed;
         private float _lastLifeUsed;
         private float _lastDefUsed;
         private float _lastOffUsed;
+        private float _lastSkillDefUsed;
+        //private float _lastSkillMoveUsed;
+
 
         #region FlaskManagerInit
         public void SplashPage()
@@ -612,7 +616,47 @@ namespace FlaskManager
                 _lastOffUsed = 0f;
         }
         #endregion
+        #region Defensive Skill
+        private void DefensiveSkill()
+        {
+            var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
+            var playerHealth = localPlayer.GetComponent<Life>();
+            _lastSkillDefUsed += 100f;
+            if (_lastSkillDefUsed < Settings.DefensiveSkillDelay.Value)
+                return;
+            if (Settings.DefSkillEnable.Value && localPlayer.IsValid)
+            {
+                if (playerHealth.HPPercentage * 100 < Settings.HpDefensiveSkill.Value ||
+                    (playerHealth.MaxES > 0 && playerHealth.ESPercentage * 100 < Settings.EsDefensiveSkill.Value))
+                {
+                    if (_keyboard.KeyPressRelease(Settings.SkillUseKey.Value))
+                        _lastSkillDefUsed = 0f;
+                }
+            }
+        }
+        #endregion
+        #region Movement Skill
+        private void MoveSkill()
+        {
+            var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
+            var playerHealth = localPlayer.GetComponent<Life>();
+            var playerMovement = localPlayer.GetComponent<Actor>();
+            //_lastSkillMoveUsed += 100f;
+            //if (_lastSkillMoveUsed < Settings.MoveSkillDelay.Value)
+            //    return;
 
+            //ToDo Move button read?
+            _moveLMBCounter = KeyboardHelper.IsKeyDown(1) ? _moveLMBCounter += 100f : 0;
+            if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value)
+            {
+                _keyboard.KeyDown(Settings.MoveUseKey.Value);
+            }
+            else if (!KeyboardHelper.IsKeyDown(1) && KeyboardHelper.IsKeyDown((int)Settings.MoveUseKey.Value))
+            {
+                _keyboard.KeyUp(Settings.MoveUseKey.Value);
+            }
+        }
+        #endregion
         private void FlaskMain()
         {
             if (!GameController.Game.IngameState.Data.LocalPlayer.IsValid)
@@ -640,6 +684,8 @@ namespace FlaskManager
             AilmentLogic();
             DefensiveFlask();
             OffensiveFlask();
+            DefensiveSkill();
+            MoveSkill();
         }
     }
 }
