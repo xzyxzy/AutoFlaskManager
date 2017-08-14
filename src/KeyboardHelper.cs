@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
+
 namespace FlaskManager
 {
     internal class KeyboardHelper
@@ -22,33 +23,68 @@ namespace FlaskManager
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        private static extern IntPtr PostMessage(IntPtr hWnd, int msg, int wParam, uint lParam);
         /*
                 [return: MarshalAs(UnmanagedType.Bool)]
                 [DllImport("user32.dll", SetLastError = true)]
                 private static extern bool PostMessage(IntPtr hWnd, uint msg, UIntPtr wParam, UIntPtr lParam);
         */
-        [DllImport("User32.dll")]
-        public static extern short GetAsyncKeyState(Keys vKey);
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(UInt16 vKey);
         [DllImport("USER32.dll")]
         private static extern short GetKeyState(int nVirtKey);
-        public void KeyDown(Keys key)
+        public void KeyDown(Keys key, bool shiftmod = false)
         {
-            SendMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, (int)key, 0);
+            if (shiftmod)
+            {
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, 0x10, 0x002A0001);
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, (int)key, 0x00100001);
+            }
+            else PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, (int)key, 0);
         }
-
+        public void KeyDownTest(Keys key, bool shiftmod = false)
+        {
+            if (shiftmod)
+            {
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, 0x10, 0x402A0001);
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, (int)key, 0x40100001);
+            }
+            else PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x100, (int)key, 0x40100001);
+        }
         public static bool IsKeyDown(int nVirtKey)
         {
-            return GetKeyState(nVirtKey) < 0;
+            bool state = false;
+            short retVal = GetKeyState((int)nVirtKey);
+
+            //If the high-order bit is 1, the key is down
+            //otherwise, it is up.
+            if ((retVal & 0x8000) == 0x8000)
+                state = true;
+
+            //If the low-order bit is 1, the key is toggled.
+            //if ((retVal & 1) == 1)
+            //    state = toggled;
+
+            return state;
         }
 
-        public void KeyUp(Keys key)
+        public static bool IsKeyDownAsync(UInt16 vKey)
         {
-            SendMessage(_gameHandle.Window.Process.MainWindowHandle, 0x101, (int)key, 0);
+            return (GetKeyState(vKey) & 0x8000) > 0 ? true : false;
         }
-        public bool KeyPressRelease(Keys key)
+
+        public void KeyUp(Keys key, bool shiftmod = false)
         {
-            KeyDown(key);
+            if (shiftmod)
+            {
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x101, (int)key, 0xC0100001);
+                PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x101, 0x10, 0xC02A0001);
+            }
+            else PostMessage(_gameHandle.Window.Process.MainWindowHandle, 0x101, (int)key, 0);
+        }
+        public bool KeyPressRelease(Keys key, bool shiftmod = false)
+        {
+            KeyDown(key, shiftmod);
             var lat = (int)(_curLatency);
             if (lat < 1000)
             {

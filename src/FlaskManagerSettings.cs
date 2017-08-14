@@ -19,6 +19,7 @@ namespace FlaskManager
             ManaDelay = new RangeNode<float>(1000f, 0f, 5000f);
             PerManaFlask = new RangeNode<float>(25f, 0, 100);
             DisableLifeSecUse = false;
+            HpDelayProper = false;
             //Ailment Flask
             RemAilment = false;
             RemFrozen = false;
@@ -64,6 +65,10 @@ namespace FlaskManager
             MoveDurration = new RangeNode<float>(500f, 0f, 5000f);
             MoveUseKey = Keys.Q;
             //MoveSkillDelay = new RangeNode<float>(500f, 0f, 10000f);
+            //Recastables
+            RecastableEnable = false;
+            FireElEnable = false;
+            FireElKey = Keys.W;
 
             // Settings
             // Flask UI Settings
@@ -108,6 +113,8 @@ namespace FlaskManager
         public RangeNode<float> ManaDelay { get; set; }
         [Menu("Disable Life/Hybrid Flask Offensive/Defensive Usage", 16, 10)]
         public ToggleNode DisableLifeSecUse { get; set; }
+        [Menu("Proper Flask Logic", 17, 10)]
+        public ToggleNode HpDelayProper { get; set; }
         #endregion
 
         #region Ailment Flask Menu
@@ -205,6 +212,15 @@ namespace FlaskManager
         public HotkeyNode MoveUseKey { get; set; }
         //[Menu("Delay (millisecond)", 83, 80)]
         //public RangeNode<float> MoveSkillDelay { get; set; }
+        #endregion
+
+        #region Recastables Menu
+        [Menu("Recastable Skills", 90)]
+        public ToggleNode RecastableEnable { get; set; }
+        [Menu("Fire Golem", 91,90)]
+        public ToggleNode FireElEnable { get; set; }
+        [Menu("Skill Key Hotkey", 911, 91)]
+        public HotkeyNode FireElKey { get; set; }
         #endregion
 
         #region Settings Menu

@@ -11,7 +11,8 @@ using PoeHUD.Plugins;
 using PoeHUD.Poe.Components;
 using PoeHUD.Poe.EntityComponents;
 using SharpDX;
-
+using WindowsInput;
+using System.Linq;
 namespace FlaskManager
 {
     internal class FlaskManagerCore : BaseSettingsPlugin<FlaskManagerSettings>
@@ -24,6 +25,7 @@ namespace FlaskManager
         private bool _isTown;
         private bool _isHideout;
         private bool _warnFlaskSpeed;
+        private bool pressed;
         private DebuffPanelConfig _debuffInfo;
         private FlaskInformation _flaskInfo;
         private FlaskKeys _keyInfo;
@@ -641,19 +643,40 @@ namespace FlaskManager
             var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
             var playerHealth = localPlayer.GetComponent<Life>();
             var playerMovement = localPlayer.GetComponent<Actor>();
+            var foreground = GameController.Window.IsForeground();
             //_lastSkillMoveUsed += 100f;
             //if (_lastSkillMoveUsed < Settings.MoveSkillDelay.Value)
             //    return;
 
             //ToDo Move button read?
             _moveLMBCounter = KeyboardHelper.IsKeyDown(1) ? _moveLMBCounter += 100f : 0;
-            if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value)
+            
+            if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value && !pressed && foreground)
             {
-                _keyboard.KeyDown(Settings.MoveUseKey.Value);
+                InputSimulator.SimulateKeyDown(VirtualKeyCode.SHIFT);
+                InputSimulator.SimulateKeyDown(VirtualKeyCode.VK_Q);
+                pressed = true;
             }
-            else if (!KeyboardHelper.IsKeyDown(1) && KeyboardHelper.IsKeyDown((int)Settings.MoveUseKey.Value))
+            //if (pressed)
+            //{
+            //    _keyboard.KeyDownTest(Settings.MoveUseKey.Value);
+            //}
+            if (!KeyboardHelper.IsKeyDown(1) && pressed && foreground)
             {
-                _keyboard.KeyUp(Settings.MoveUseKey.Value);
+                InputSimulator.SimulateKeyUp(VirtualKeyCode.VK_Q);
+                InputSimulator.SimulateKeyUp(VirtualKeyCode.SHIFT);
+                pressed = false;
+            }
+        }
+        #endregion
+        #region Recastable
+        private void RecastableSkill()
+        {
+            var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
+            bool fireelembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "fire_elemental_buff");
+            if (Settings.FireElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !fireelembuff)
+            {
+                _keyboard.KeyPressRelease(Settings.FireElKey.Value);
             }
         }
         #endregion
@@ -686,6 +709,7 @@ namespace FlaskManager
             OffensiveFlask();
             DefensiveSkill();
             MoveSkill();
+            RecastableSkill();
         }
     }
 }
