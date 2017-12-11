@@ -768,6 +768,18 @@ namespace FlaskManager
 
         }
         #endregion
+
+        #region Vaal Haste
+        private void VaalHaste()
+        {
+            var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
+            bool vaalhastebuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "vaal_aura_speed");
+            if (Settings.VaalHasteEnable.Value && localPlayer.IsValid && !vaalhastebuff)
+            {
+                _keyboard.KeyPressRelease(Settings.HasteUseKey.Value);
+            }
+        }
+        #endregion
         private void FlaskMain()
         {
             if (!GameController.Window.IsForeground())
@@ -802,6 +814,7 @@ namespace FlaskManager
             DefensiveSkill2();
             MoveSkill();
             RecastableSkill();
+            VaalHaste();
         }
     }
 }

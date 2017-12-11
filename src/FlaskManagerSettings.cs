@@ -59,6 +59,9 @@ namespace FlaskManager
             OffensiveUseWhenCharges = new RangeNode<int>(0, 0, 100);
             //Unique Flask
             UniqFlaskEnable = false;
+            //Vaal Haste
+            VaalHasteEnable = false;
+            HasteUseKey = Keys.E;
             //Defensive Skill
             DefSkillEnable = false;
             HpDefensiveSkill = new RangeNode<int>(50, 0, 100);
@@ -211,6 +214,12 @@ namespace FlaskManager
         #region Unnique Flask Menu
         [Menu("Unique Flask", 60)]
         public ToggleNode UniqFlaskEnable { get; set; }
+        #endregion
+        #region Vaal Haste Menu
+        [Menu("Vaal Haste", 68)]
+        public ToggleNode VaalHasteEnable { get; set; }
+        [Menu("Skill Key Hotkey", 69, 68)]
+        public HotkeyNode HasteUseKey { get; set; }
         #endregion
         #region Defensive Skill Menu
         [Menu("Defensive Skill", 70)]
