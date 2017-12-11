@@ -15,11 +15,10 @@ namespace FlaskManager
             AutoFlask = false;
             PerHpFlask = new RangeNode<int>(60, 0, 100);
             InstantPerHpFlask = new RangeNode<int>(35, 0, 100);
-            HpDelay = new RangeNode<float>(1000f, 0f, 5000f);
-            ManaDelay = new RangeNode<float>(1000f, 0f, 5000f);
             PerManaFlask = new RangeNode<float>(25f, 0, 100);
+			InstantPerMpFlask = new RangeNode<int>(35, 0, 100);
+            MinManaFlask = new RangeNode<float>(50, 0, 100);
             DisableLifeSecUse = false;
-            HpDelayProper = false;
             //Ailment Flask
             RemAilment = false;
             RemFrozen = false;
@@ -31,9 +30,15 @@ namespace FlaskManager
             CorrptCount = new RangeNode<int>(10, 1, 20);
             AilmentDur = new RangeNode<int>(0, 0, 5000);
             //Quicksilver
+			SpeedFlaskEnable = false;
+            ShouldDrinkSilverQuickSilverTogether = true;
             QuicksilverEnable = false;
             QuicksilverDurration = new RangeNode<float>(500f, 0f, 5000f);
             QuicksilverUseWhenCharges = new RangeNode<int>(0, 0, 100);
+			//SilverFlask
+            SilverFlaskEnable = false;
+            SilverFlaskDurration = new RangeNode<float>(500f, 0f, 6000f);
+            SilverFlaskUseWhenCharges = new RangeNode<int>(0, 0, 100);
             //Defensive Flask
             DefFlaskEnable = false;
             HpDefensive = new RangeNode<int>(50, 0, 100);
@@ -60,6 +65,12 @@ namespace FlaskManager
             EsDefensiveSkill = new RangeNode<int>(50, 0, 100);
             DefensiveSkillDelay = new RangeNode<float>(3000f, 0f, 10000f);
             SkillUseKey = Keys.R;
+            //Defensive Skill 2
+            DefSkillEnable2 = false;
+            HpDefensiveSkill2 = new RangeNode<int>(50, 0, 100);
+            EsDefensiveSkill2 = new RangeNode<int>(50, 0, 100);
+            DefensiveSkillDelay2 = new RangeNode<float>(3000f, 0f, 10000f);
+            SkillUseKey2 = Keys.W;
             //Movement Skill
             MoveEnable = false;
             MoveDurration = new RangeNode<float>(500f, 0f, 5000f);
@@ -69,7 +80,8 @@ namespace FlaskManager
             RecastableEnable = false;
             FireElEnable = false;
             FireElKey = Keys.W;
-
+            LightningElEnable = false;
+            LightningElKey = Keys.R;
             // Settings
             // Flask UI Settings
             FlaskUiEnable = false;
@@ -105,16 +117,15 @@ namespace FlaskManager
         public RangeNode<int> PerHpFlask { get; set; }
         [Menu("Min Life % Auto Instant HP Flask (put instant flask in last slot)", 12, 10)]
         public RangeNode<int> InstantPerHpFlask { get; set; }
-        [Menu("HP Flask Delay (millisecond)", 13, 10)]
-        public RangeNode<float> HpDelay { get; set; }
+
         [Menu("Min Mana % Auto Mana Flask", 14, 10)]
         public RangeNode<float> PerManaFlask { get; set; }
-        [Menu("Mana Flask Delay (millisecond)", 15, 10)]
-        public RangeNode<float> ManaDelay { get; set; }
-        [Menu("Disable Life/Hybrid Flask Offensive/Defensive Usage", 16, 10)]
+        [Menu("Min Mana Auto Mana Flask", 15, 10)]
+        public RangeNode<float> MinManaFlask { get; set; }
+		[Menu("Min Mana % Auto Instant HP Flask (put instant flask in last slot)", 16, 10)]
+        public RangeNode<int> InstantPerMpFlask { get; set; }
+        [Menu("Disable Life/Hybrid Flask Offensive/Defensive Usage", 18, 10)]
         public ToggleNode DisableLifeSecUse { get; set; }
-        [Menu("Proper Flask Logic", 17, 10)]
-        public ToggleNode HpDelayProper { get; set; }
         #endregion
 
         #region Ailment Flask Menu
@@ -138,15 +149,27 @@ namespace FlaskManager
         public RangeNode<int> AilmentDur { get; set; }
         #endregion
 
-        #region Quick Sivler Flask Menu
-        [Menu("QuickSilver Flask", 30)]
-        public ToggleNode QuicksilverEnable { get; set; }
-        [Menu("Use After Moving Post (millisecond)", 31, 30)]
-        public RangeNode<float> QuicksilverDurration { get; set; }
-        [Menu("Use When Charges Greater than X (0 to disable it)", 32, 30)]
-        public RangeNode<int> QuicksilverUseWhenCharges { get; set; }
-        #endregion
+        #region Speed Flask Menu
+		[Menu("Speed Flask", 30)]
+        public ToggleNode SpeedFlaskEnable { get; set; }
 
+        [Menu("QuickSilver Flask", 31, 30)]
+        public ToggleNode QuicksilverEnable { get; set; }
+        [Menu("Use QuickSilver After Moving Post (millisecond)", 32, 30)]
+        public RangeNode<float> QuicksilverDurration { get; set; }
+        [Menu("Use QuickSilver When Charges Greater than X (0 to disable it)", 33, 30)]
+        public RangeNode<int> QuicksilverUseWhenCharges { get; set; }
+
+        [Menu("Silver Flask", 34, 30)]
+        public ToggleNode SilverFlaskEnable { get; set; }
+        [Menu("Use Silver Flask After Moving Post (millisecond)", 35, 30)]
+        public RangeNode<float> SilverFlaskDurration { get; set; }
+        [Menu("Use Silver Flask When Charges Greater than X (0 to disable it)", 36, 30)]
+        public RangeNode<int> SilverFlaskUseWhenCharges { get; set; }
+        [Menu("Drink Silver/QuickSilver Together", 37, 30)]
+        public ToggleNode ShouldDrinkSilverQuickSilverTogether { get; set; }
+        #endregion
+			
         #region Defensive Flask Menu
         [Menu("Defensive Flask", 40)]
         public ToggleNode DefFlaskEnable { get; set; }
@@ -189,7 +212,6 @@ namespace FlaskManager
         [Menu("Unique Flask", 60)]
         public ToggleNode UniqFlaskEnable { get; set; }
         #endregion
-
         #region Defensive Skill Menu
         [Menu("Defensive Skill", 70)]
         public ToggleNode DefSkillEnable { get; set; }
@@ -202,7 +224,19 @@ namespace FlaskManager
         [Menu("Skill Key Hotkey", 74, 70)]
         public HotkeyNode SkillUseKey { get; set; }
         #endregion
-        
+        #region Defensive Skill 2 Menu
+        [Menu("Defensive Skill 2", 75)]
+        public ToggleNode DefSkillEnable2 { get; set; }
+        [Menu("Min Life %", 76, 75)]
+        public RangeNode<int> HpDefensiveSkill2 { get; set; }
+        [Menu("Min ES %", 77, 75)]
+        public RangeNode<int> EsDefensiveSkill2 { get; set; }
+        [Menu("Delay (millisecond)", 78, 75)]
+        public RangeNode<float> DefensiveSkillDelay2 { get; set; }
+        [Menu("Skill Key Hotkey", 79, 75)]
+        public HotkeyNode SkillUseKey2 { get; set; }
+        #endregion
+
         #region Movement Skill Menu
         [Menu("Movement Skill", 80)]
         public ToggleNode MoveEnable { get; set; }
@@ -217,10 +251,14 @@ namespace FlaskManager
         #region Recastables Menu
         [Menu("Recastable Skills", 90)]
         public ToggleNode RecastableEnable { get; set; }
-        [Menu("Fire Golem", 91,90)]
+        [Menu("Fire Golem", 91, 90)]
         public ToggleNode FireElEnable { get; set; }
-        [Menu("Skill Key Hotkey", 911, 91)]
+        [Menu("Skill Key Hotkey", 92, 90)]
         public HotkeyNode FireElKey { get; set; }
+        [Menu("Lightning Golem", 93, 90)]
+        public ToggleNode LightningElEnable { get; set; }
+        [Menu("Skill Key Hotkey", 94, 90)]
+        public HotkeyNode LightningElKey { get; set; }
         #endregion
 
         #region Settings Menu
