@@ -81,10 +81,24 @@ namespace FlaskManager
             //MoveSkillDelay = new RangeNode<float>(500f, 0f, 10000f);
             //Recastables
             RecastableEnable = false;
+            GolemsEnable = false;
             FireElEnable = false;
             FireElKey = Keys.W;
             LightningElEnable = false;
             LightningElKey = Keys.R;
+            RockElEnable = false;
+            RockElKey = Keys.R;
+            IceElEnable = false;
+            IceElKey = Keys.R;
+            ChaosElEnable = false;
+            ChaosElKey = Keys.R;
+            BuffsEnable = false;
+            BloodRageEnable = false;
+            BRTime = new RangeNode<float>(3000f, 0f, 10000f);
+            BloodRageKey = Keys.R;
+            EndurChargeEnable = false;
+            ECTime = new RangeNode<float>(3000f, 0f, 10000f);
+            EndurCryKey = Keys.R;
             // Settings
             // Flask UI Settings
             FlaskUiEnable = false;
@@ -260,60 +274,88 @@ namespace FlaskManager
         #region Recastables Menu
         [Menu("Recastable Skills", 90)]
         public ToggleNode RecastableEnable { get; set; }
-        [Menu("Fire Golem", 91, 90)]
+        [Menu("Golems", 91, 90)]
+        public ToggleNode GolemsEnable { get; set; }
+        [Menu("Fire Golem", 92, 91)]
         public ToggleNode FireElEnable { get; set; }
-        [Menu("Skill Key Hotkey", 92, 90)]
+        [Menu("Skill Key Hotkey", 93, 91)]
         public HotkeyNode FireElKey { get; set; }
-        [Menu("Lightning Golem", 93, 90)]
+        [Menu("Lightning Golem", 94, 91)]
         public ToggleNode LightningElEnable { get; set; }
-        [Menu("Skill Key Hotkey", 94, 90)]
+        [Menu("Skill Key Hotkey", 95, 91)]
         public HotkeyNode LightningElKey { get; set; }
+        [Menu("Stone Golem", 96, 91)]
+        public ToggleNode RockElEnable { get; set; }
+        [Menu("Skill Key Hotkey", 97, 91)]
+        public HotkeyNode RockElKey { get; set; }
+        [Menu("Ice Golem", 98, 91)]
+        public ToggleNode IceElEnable { get; set; }
+        [Menu("Skill Key Hotkey", 99, 91)]
+        public HotkeyNode IceElKey { get; set; }
+        [Menu("Chaos Golem", 100, 91)]
+        public ToggleNode ChaosElEnable { get; set; }
+        [Menu("Skill Key Hotkey", 101, 91)]
+        public HotkeyNode ChaosElKey { get; set; }
+        [Menu("Buffs", 102, 90)]
+        public ToggleNode BuffsEnable { get; set; }
+        [Menu("Blood Rage On Buff Timing out", 103, 102)]
+        public ToggleNode BloodRageEnable { get; set; }
+        [Menu("Skill Key Hotkey", 104, 102)]
+        public HotkeyNode BloodRageKey { get; set; }
+        [Menu("Blood Rage Expires In...", 105, 102)]
+        public RangeNode<float> BRTime { get; set; }
+        [Menu("Enduring Cry On Charges Timing out", 106, 102)]
+        public ToggleNode EndurChargeEnable { get; set; }
+        [Menu("Enduring Cry Hotkey", 107, 102)]
+        public HotkeyNode EndurCryKey { get; set; }
+        [Menu("Endurance Charges Expires In...", 108, 102)]
+        public RangeNode<float> ECTime { get; set; }
         #endregion
 
         #region Settings Menu
-        [Menu("UI Settings", 100)]
+        [Menu("UI Settings", 200)]
         public EmptyNode UiSesettingsHolder { get; set; }
-        [Menu("Flask Slot UI", 101, 100)]
+        [Menu("Flask Slot UI", 201, 200)]
 
         public ToggleNode FlaskUiEnable { get; set; }
-        [Menu("Position: X", 102, 101)]
+        [Menu("Position: X", 202, 201)]
         public RangeNode<float> FlaskPositionX { get; set; }
-        [Menu("Position: Y", 103, 101)]
+        [Menu("Position: Y", 203, 201)]
         public RangeNode<float> FlaskPositionY { get; set; }
-        [Menu("Text Size", 104, 101)]
+        [Menu("Text Size", 204, 201)]
         public RangeNode<int> FlaskTextSize { get; set; }
 
-        [Menu("Buff Bar UI", 105, 100)]
+        [Menu("Buff Bar UI", 205, 200)]
         public ToggleNode BuffUiEnable { get; set; }
-        [Menu("Position: X", 106, 105)]
+        [Menu("Position: X", 206, 205)]
         public RangeNode<float> BuffPositionX { get; set; }
-        [Menu("Position: Y", 107, 105)]
+        [Menu("Position: Y", 207, 205)]
         public RangeNode<float> BuffPositionY { get; set; }
-        [Menu("Text Size", 108, 105)]
+        [Menu("Text Size", 208, 205)]
         public RangeNode<int> BuffTextSize { get; set; }
-        [Menu("Enable Flask Or Aura Debuff/Buff", 109, 105)]
+        [Menu("Enable Flask Or Aura Debuff/Buff", 209, 205)]
         public ToggleNode EnableFlaskAuraBuff { get; set; }
 
-        [Menu("Debug Mode", 110, 100)]
+        [Menu("Debug Mode", 210, 200)]
         public ToggleNode DebugMode { get; set; }
 
-        [Menu("Enable/Disable Flasks", 120)]
+        [Menu("Enable/Disable Flasks", 220)]
         public EmptyNode FlasksettingsHolder { get; set; }
-        [Menu("Use Flask Slot 1", 121, 120)]
+        [Menu("Use Flask Slot 1", 221, 220)]
         public ToggleNode FlaskSlot1Enable { get; set; }
-        [Menu("Use Flask Slot 2", 122, 120)]
+        [Menu("Use Flask Slot 2", 222, 220)]
         public ToggleNode FlaskSlot2Enable { get; set; }
-        [Menu("Use Flask Slot 3", 123, 120)]
+        [Menu("Use Flask Slot 3", 223, 220)]
         public ToggleNode FlaskSlot3Enable { get; set; }
-        [Menu("Use Flask Slot 4", 124, 120)]
+        [Menu("Use Flask Slot 4", 224, 220)]
         public ToggleNode FlaskSlot4Enable { get; set; }
-        [Menu("Use Flask Slot 5", 125, 120)]
+        [Menu("Use Flask Slot 5", 225, 220)]
         public ToggleNode FlaskSlot5Enable { get; set; }
 
-        [Menu("About", 126)]
+        [Menu("About", 226)]
         public ToggleNode About { get; set; }
 
-        [Menu("Total Charges Reduction %", 127)]
+        [Menu("Total Charges Reduction %", 227)]
         public RangeNode<float> ChargeReduction { get; set; }
         #endregion
 

@@ -10,6 +10,7 @@ using PoeHUD.Models.Enums;
 using PoeHUD.Plugins;
 using PoeHUD.Poe.Components;
 using PoeHUD.Poe.EntityComponents;
+using PoeHUD.Poe.RemoteMemoryObjects;
 using SharpDX;
 using WindowsInput;
 using System.Linq;
@@ -756,14 +757,39 @@ namespace FlaskManager
         {
             var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
             bool fireelembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "fire_elemental_buff");
-            if (Settings.FireElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !fireelembuff)
+            if (Settings.FireElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !fireelembuff && Settings.GolemsEnable)
             {
                 _keyboard.KeyPressRelease(Settings.FireElKey.Value);
             }
             bool lightningelembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "lightning_elemental_buff");
-            if (Settings.LightningElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !lightningelembuff)
+            if (Settings.LightningElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !lightningelembuff && Settings.GolemsEnable)
             {
                 _keyboard.KeyPressRelease(Settings.LightningElKey.Value);
+            }
+            bool rockelembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "rock_golem_buff");
+            if (Settings.RockElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !rockelembuff && Settings.GolemsEnable)
+            {
+                _keyboard.KeyPressRelease(Settings.RockElKey.Value);
+            }
+            bool iceelembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "ice_elemental_buff");
+            if (Settings.IceElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !iceelembuff && Settings.GolemsEnable)
+            {
+                _keyboard.KeyPressRelease(Settings.IceElKey.Value);
+            }
+            bool chaoselembuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "chaos_elemental_buff");
+            if (Settings.ChaosElEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && !chaoselembuff && Settings.GolemsEnable)
+            {
+                _keyboard.KeyPressRelease(Settings.ChaosElKey.Value);
+            }
+            bool bloodragebuff = localPlayer.GetComponent<Life>().Buffs.Any(s => (s.Name.Contains("blood_rage") && s.Timer < (Settings.BRTime.Value/1000)));
+            if (Settings.BloodRageEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && bloodragebuff && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisible && Settings.BuffsEnable)
+            {
+                _keyboard.KeyPressRelease(Settings.BloodRageKey.Value);
+            }
+            bool endurchargbuff = localPlayer.GetComponent<Life>().Buffs.Any(s => (s.Name.Contains("endurance_charge") && s.Timer < (Settings.ECTime.Value/1000)));
+            if (Settings.EndurChargeEnable.Value && Settings.RecastableEnable.Value && localPlayer.IsValid && endurchargbuff && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisible && Settings.BuffsEnable)
+            {
+                _keyboard.KeyPressRelease(Settings.EndurCryKey.Value);
             }
 
         }
@@ -774,7 +800,7 @@ namespace FlaskManager
         {
             var localPlayer = GameController.Game.IngameState.Data.LocalPlayer;
             bool vaalhastebuff = localPlayer.GetComponent<Life>().Buffs.Any(s => s.Name == "vaal_aura_speed");
-            if (Settings.VaalHasteEnable.Value && localPlayer.IsValid && !vaalhastebuff)
+            if (Settings.VaalHasteEnable.Value && localPlayer.IsValid && !vaalhastebuff && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisible)
             {
                 _keyboard.KeyPressRelease(Settings.HasteUseKey.Value);
             }
