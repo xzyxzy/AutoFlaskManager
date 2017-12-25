@@ -733,22 +733,29 @@ namespace FlaskManager
 
             //ToDo Move button read?
             _moveLMBCounter = KeyboardHelper.IsKeyDown(1) ? _moveLMBCounter += 100f : 0;
-
-            if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value && !pressed && foreground)
+            if (Settings.ShiftMod.Value)
             {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.SHIFT);
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.VK_Q);
-                pressed = true;
+                if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value && !pressed && foreground)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.SHIFT);
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.VK_Q);
+                    pressed = true;
+                }
+                //if (pressed)
+                //{
+                //    _keyboard.KeyDownTest(Settings.MoveUseKey.Value);
+                //}
+                if (!KeyboardHelper.IsKeyDown(1) && pressed && foreground)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.VK_Q);
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.SHIFT);
+                    pressed = false;
+                }
             }
-            //if (pressed)
-            //{
-            //    _keyboard.KeyDownTest(Settings.MoveUseKey.Value);
-            //}
-            if (!KeyboardHelper.IsKeyDown(1) && pressed && foreground)
+            else
             {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.VK_Q);
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.SHIFT);
-                pressed = false;
+                if (localPlayer.IsValid && Settings.MoveEnable.Value && _moveLMBCounter >= Settings.MoveDurration.Value && foreground)
+                    _keyboard.KeyPressRelease(Settings.MoveUseKey.Value);
             }
         }
         #endregion
@@ -808,6 +815,9 @@ namespace FlaskManager
         #endregion
         private void FlaskMain()
         {
+            if (GameController == null || GameController.Window == null || GameController.Game.IngameState.Data.LocalPlayer == null || GameController.Game.IngameState.Data.LocalPlayer.Address == 0x00)
+                return;
+
             if (!GameController.Window.IsForeground())
                 return;
 

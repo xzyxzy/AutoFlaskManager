@@ -78,6 +78,7 @@ namespace FlaskManager
             MoveEnable = false;
             MoveDurration = new RangeNode<float>(500f, 0f, 5000f);
             MoveUseKey = Keys.Q;
+            ShiftMod = true;
             //MoveSkillDelay = new RangeNode<float>(500f, 0f, 10000f);
             //Recastables
             RecastableEnable = false;
@@ -267,6 +268,8 @@ namespace FlaskManager
         public RangeNode<float> MoveDurration { get; set; }
         [Menu("Skill Key Hotkey", 82, 80)]
         public HotkeyNode MoveUseKey { get; set; }
+        [Menu("Hold shift", 83, 80)]
+        public ToggleNode ShiftMod { get; set; }
         //[Menu("Delay (millisecond)", 83, 80)]
         //public RangeNode<float> MoveSkillDelay { get; set; }
         #endregion
